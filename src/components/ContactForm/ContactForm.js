@@ -1,47 +1,42 @@
 import PropTypes from 'prop-types'
-import React, { Component } from 'react'
+import React, { useState } from 'react'
 import { Form , SubmitButton} from './ContactForm.styled'
 
-export default class ContactForm extends Component {
+const ContactForm = ({onFormSubmit, existedContacts}) => {
 
-    state = {
-      contactName: '',
-      telNumber: '',
-    }
+  const [contactName, setContactName] = useState('');
+  const [telNumber, setTelNumber] = useState('');
 
-    addName = (e) => {
+    const addName = (e) => {
     const newName = e.currentTarget.value;      
-    this.setState({ contactName: newName })
+      setContactName(newName);
     }
   
-    addTelNumber = (e) => {
+    const addTelNumber = (e) => {
       const newTelNumber = e.currentTarget.value;
-      this.setState({telNumber: newTelNumber})
+      setTelNumber(newTelNumber);
     }
   
-   onSubmit = (e) => {
-    e.preventDefault();
-     
-     const isAlreadyInContactList = this.props.existedContacts.find(contact => contact.name.toLowerCase() === this.state.contactName.toLocaleLowerCase());
-    
-     isAlreadyInContactList ? alert('This contact is already existed') : this.props.onSubmit(this.state.contactName,
-       this.state.telNumber);
-     
-     this.setState({
-      contactName: '',
-      telNumber: '',
-    })
+    const onFormSubmitHandler = (e) => {
+      e.preventDefault();
+      
+      const isAlreadyInContactList = existedContacts.find(contact => contact.name.toLowerCase() === contactName.toLocaleLowerCase());
+      
+      isAlreadyInContactList ? alert('This contact is already existed') : onFormSubmit(contactName,
+        telNumber);
+      
+      setContactName('');
+      setTelNumber('');
 }
 
-  render() {
-    return (
-      <Form onSubmit={this.onSubmit}>
+  return (
+      <Form onSubmit={onFormSubmitHandler}>
         <label>
           Name <input
   type="text"
   name="name"
-  value={this.state.contactName}
-  onChange={this.addName}
+          value={contactName}
+  onChange={addName}
   pattern="^[a-zA-Zа-яА-Я]+(([' -][a-zA-Zа-яА-Я ])?[a-zA-Zа-яА-Я]*)*$"
             title="Name may contain only letters, apostrophe, dash and spaces. For example Adrian, Jacob Mercer, Charles de Batz de Castelmore d'Artagnan"
           required
@@ -51,8 +46,8 @@ export default class ContactForm extends Component {
           Tel <input
   type="tel"
           name="number"
-          value={this.state.telNumber}
-          onChange={this.addTelNumber}
+          value={telNumber}
+          onChange={addTelNumber}
   pattern="\+?\d{1,4}?[-.\s]?\(?\d{1,3}?\)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}"
   title="Phone number must be digits and can contain spaces, dashes, parentheses and can start with +"
   required
@@ -61,7 +56,6 @@ export default class ContactForm extends Component {
         <SubmitButton type="submit">Add Contact</SubmitButton>
       </Form>
     )
-  }
 }
 
 ContactForm.propTypes = {
@@ -74,3 +68,5 @@ ContactForm.propTypes = {
     })
   ),
 }
+
+export default ContactForm
